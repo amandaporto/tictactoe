@@ -24,16 +24,25 @@ class Board
     board_with_turns
   end
 
+  def invalid_move_1
+    if @board[@player_choice - 1] == "0" || @board[@player_choice - 1] == "X"
+      puts "Invalid positioning, please pick another."
+      player1_turn
+    end
+  end
+
+  def invalid_move_2
+    if @board[@player_choice - 1] == "0" || @board[@player_choice - 1] == "X"
+      puts "Invalid positioning, please pick another."
+      player2_turn
+    end
+  end
+
   def player1_turn
     puts "\nPlease pick your placement"
     print "#{@player1} pick : "
-    player_choice = gets.chomp.to_i
-      if @board[player_choice - 1] == "0" || @board[player_choice - 1] == "X"
-        puts "Invalid positioning, please pick another."
-        return
-      else
-        @board[player_choice - 1] = "X"
-      end
+    @player_choice = gets.chomp.to_i
+    @board[@player_choice - 1] = "X" unless invalid_move_1
     board_with_turns
     @turns += 1
     player_wins("X")
@@ -42,14 +51,9 @@ class Board
   def player2_turn
     puts "\nPlease pick your placement"
     print "#{@player2} pick : "
-    player_choice = gets.chomp.to_i
+    @player_choice = gets.chomp.to_i
     ## Why cant I use == 0 || X
-    if @board[player_choice - 1] == "0" || @board[player_choice - 1] == "X"
-      puts "Invalid positioning, please pick another."
-      return
-    else
-      @board[player_choice - 1] = "0"
-    end
+    @board[@player_choice - 1] = "0" unless invalid_move_2
     board_with_turns
     @turns += 1
     player_wins("0")
