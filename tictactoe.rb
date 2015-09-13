@@ -24,39 +24,36 @@ class Board
     board_with_turns
   end
 
-  def invalid_move_1
-    if @board[@player_choice - 1] == "0" || @board[@player_choice - 1] == "X"
-      puts "Invalid positioning, please pick another."
-      player1_turn
-    end
-  end
-
-  def invalid_move_2
-    if @board[@player_choice - 1] == "0" || @board[@player_choice - 1] == "X"
-      puts "Invalid positioning, please pick another."
-      player2_turn
-    end
+  def valid_move?(player_choice)
+    @board[player_choice-1] != "0" && @board[player_choice-1] != "X"
   end
 
   def player1_turn
     puts "\nPlease pick your placement"
     print "#{@player1} pick : "
-    @player_choice = gets.chomp.to_i
-    @board[@player_choice - 1] = "X" unless invalid_move_1
+    player_choice = gets.chomp.to_i
+    until valid_move?(player_choice)
+      puts "Invalid positioning, please pick another."
+      player_choice = gets.chomp.to_i
+    end
+    @board[player_choice - 1] = "X"
     board_with_turns
     @turns += 1
-    player_wins("X")
+    p @turns
   end
 
   def player2_turn
     puts "\nPlease pick your placement"
     print "#{@player2} pick : "
-    @player_choice = gets.chomp.to_i
-    ## Why cant I use == 0 || X
-    @board[@player_choice - 1] = "0" unless invalid_move_2
+    player_choice = gets.chomp.to_i
+    until valid_move?(player_choice)
+      puts "Invalid positioning, please pick another."
+      player_choice = gets.chomp.to_i
+    end
+    @board[player_choice - 1] = "0"
     board_with_turns
     @turns += 1
-    player_wins("0")
+    p @turns
   end
 
   def board_with_turns
@@ -70,21 +67,30 @@ class Board
   end
 
   def player_wins (x_or_0)
-    if @winning_combos.any? {|winning_combo|
-      winning_combo.all? {|position| @board[position-1] == x_or_0}}
-      puts "You won!!"
-      puts ""
-      play
-    end
+    @winning_combos.any? { |winning_combo|
+      winning_combo.all? { |position| @board[position-1] == x_or_0}
+    }
   end
-
 
   def play
     welcome
-    while @turns < 9
+    while @turns < 8
+
       player1_turn
+      if player_wins ("X")
+        puts "#{@player1} won!!"
+        break
+      end
+
       player2_turn
+      if player_wins ("0")
+        puts "#{@player2} won!!"
+        break
+      end
+
     end
+
+    puts "Its a tie"
   end
 
 end
